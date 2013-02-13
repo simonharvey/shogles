@@ -1,55 +1,19 @@
 //
 //  utils.h
-//  Shadows
+//  Frontline
 //
-//  Created by Simon Harvey on 12-01-04.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Simon Harvey on 12-11-12.
+//  Copyright (c) 2012 Simon Harvey. All rights reserved.
 //
 
-#ifndef Shadows_utils_h
-#define Shadows_utils_h
+#ifndef Frontline_utils_h
+#define Frontline_utils_h
 
-namespace shogles 
+template <typename T>
+T rand_range(T min, T max)
 {
-	#define deg2rad(x) GLKMathDegreesToRadians(x)
-	
-	static unsigned long next_pot(unsigned long x)
-	{
-		x = x - 1;
-		x = x | (x >> 1);
-		x = x | (x >> 2);
-		x = x | (x >> 4);
-		x = x | (x >> 8);
-		x = x | (x >>16);
-		return x + 1;
-	}
-	
-	inline const char * abs_path(const char *f)
-	{
-		NSString *s = [NSString stringWithUTF8String:f];
-		NSArray *a = [s componentsSeparatedByString:@"."];
-		NSString *name = [a objectAtIndex:0];
-		NSString *type = [a objectAtIndex:1];
-		NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:type];	  
-		return [path UTF8String];
-	}
-	
-	inline GLuint load_texture(const char *path)
-	{
-		NSString *s = [NSString stringWithUTF8String:path];
-		NSArray *a = [s componentsSeparatedByString:@"."];
-		NSString *name = [a objectAtIndex:0];
-		NSString *type = [a objectAtIndex:1];
-		NSDictionary * options = [NSDictionary dictionaryWithObjectsAndKeys:
-								  [NSNumber numberWithBool:YES],
-								  GLKTextureLoaderOriginBottomLeft, 
-								  nil];
-		GLKTextureInfo *tex = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:name ofType:type] 
-																  options:options error:nil];
-		GLuint tname = tex.name;
-		//[tex release];
-		return tname;
-	}
+	return (rand() % (max-min)) + min;
+	//return (max-min)*(rand() / (float)RAND_MAX) + min;
 }
 
 #endif

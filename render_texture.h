@@ -10,7 +10,7 @@
 #define Shadows_render_texture_h
 
 #include <OpenGLES/ES2/gl.h>
-#include "utils.h"
+#include "shogles_utils.h"
 
 namespace shogles 
 {

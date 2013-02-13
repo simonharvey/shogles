@@ -1,13 +1,13 @@
 //
 //  shader.h
-//  Shadows
+//  shogles
 //
-//  Created by Simon Harvey on 12-01-02.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Simon Harvey on 12-10-29.
+//
 //
 
-#ifndef Shadows_shader_h
-#define Shadows_shader_h
+#ifndef shogles_shader_h
+#define shogles_shader_h
 
 #include <OpenGLES/ES2/gl.h>
 #include <regex>
@@ -20,6 +20,8 @@ using namespace std;
 
 namespace shogles
 {
+	class ShaderHandle;
+	
 	class Shader
 	{
 		GLuint program;
@@ -58,8 +60,8 @@ namespace shogles
 			delete[] buffer;
 		}
 		
-		bool compile() {
-			string vertex_src, frag_src;
+		bool compile(const string defines = "") {
+			string vertex_src = defines, frag_src = defines;
 			for (string &s : vertex_parts) vertex_src.append(s);
 			for (string &s : fragment_parts) frag_src.append(s);
 			GLuint vertex_shader = compile_shader(GL_VERTEX_SHADER, vertex_src.c_str());
@@ -78,7 +80,7 @@ namespace shogles
 				glGetProgramInfoLog(program, 1024, NULL, errorLog);
 				cout << "error linking program: " << errorLog;
 				return false;
-			}			
+			}
 			
 			glValidateProgram(program);
 			glGetProgramiv(program, GL_VALIDATE_STATUS, &success);
@@ -91,7 +93,7 @@ namespace shogles
 				return false;
 			}
 			
-			return true;//success != GL_FALSE;
+			return success != GL_FALSE;
 		}
 		
 		GLuint attrib_loc(const char *name) const {
@@ -131,7 +133,7 @@ namespace shogles
 			return shader;
 		}
 	};
-
+	
 	class ShaderHandle
 	{
 		vector<const char *>bound_tex;
@@ -143,7 +145,6 @@ namespace shogles
 		{
 			
 		}
-		
 		
 		void bind_tex(const char * uniform_name, GLuint tex)
 		{
@@ -161,41 +162,9 @@ namespace shogles
 			return loc;
 		}
 	};
-	
-	class ShaderLoader
-	{
-		static ShaderLoader * _instance;
-		map<const char *, Shader *> shaders;
-		
-		ShaderLoader() {
-			
-		}
-		
-	public:
-		static ShaderLoader &get_instance() {
-			if (_instance == NULL) {
-				_instance = new ShaderLoader();
-			}
-			return *_instance;
-		}
-		
-		Shader & get_shader(const char * filepath) {
-			auto it = shaders.find(filepath);
-			if (it == shaders.end()) {
-				Shader *s = new Shader();
-				s->add_source(filepath);
-				s->compile();
-				shaders[filepath] = s;
-				return *s;
-			} else {
-				return *(*it).second;
-			}
-		}
-	};
-	
-	ShaderLoader * ShaderLoader::_instance = NULL;
-
-
 }
+
+#define ATTRIB(shader, name) GLuint name = shader->attrib_loc(#name)
+#define UNIFORM(shader, name) GLuint name = shader->uniform_loc(#name)
 
 #endif
