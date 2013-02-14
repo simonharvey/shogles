@@ -139,7 +139,7 @@ namespace shogles
 			glUniformMatrix4fv(u_Projection, 1, false, value_ptr(projection));
 			
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(atlas.texture->get(), 0);
+			glBindTexture(GL_TEXTURE_2D, atlas.texture->get());
 			glUniform1i(u_Tex, 0);
 			
 			// vertex attrib
